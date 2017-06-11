@@ -20,33 +20,13 @@ public class CukierniaMain {
 
 			@Override
 			public void run() {
-				JdbcConnection jdbcConnection = new JdbcConnection("ora3.elka.pw.edu.pl", 1521, "ora3inf");
+				MainFrame mainFrame = new MainFrame();	
+				mainFrame.setVisible(true);
 				
-				
-				
-				Pracownik pracownik = jdbcConnection.selectPracownik("94050609715");
-				
-				System.out.println(pracownik.getAdres().getId_dostawcy());
-				
-//				jdbcPracownik.updatePracownik(pracownik);
-//				
-//				Pracownik pracownik2 = jdbcPracownik.selectPracownik("94050609715");
-//				System.out.println(pracownik2.getNazwisko());
-				
-//				System.out.println(pracownik.getDataUrodzenia().getYear());
-//				JdbcWlasciciel jdbcWlasciciel = new JdbcWlasciciel(jdbcConnection);
-//				Wlasciciel wlasciciel = jdbcWlasciciel.selectWlasciciel("95050609715");
-//				wlasciciel.setImie("Tomek");
-//				jdbcWlasciciel.updateWlasciciel(wlasciciel);
-				
-//				Wlasciciel wlasciciel2 = jdbcWlasciciel.selectWlasciciel("95050609715");
-				
-//				System.out.println(wlasciciel2.getImie());
-				
-//				int login = jdbcConnection.checkLogin("Tomasz-Kowalski", "95050609715");
-//				System.out.println(login);
-				
-				jdbcConnection.closeConnection();
+//				JdbcConnection jdbcConnection = new JdbcConnection("ora3.elka.pw.edu.pl", 1521, "ora3inf");
+//				Pracownik pracownik = jdbcConnection.selectPracownik("94050609715");
+//				System.out.println(pracownik.getAdres().getId_dostawcy());
+//				jdbcConnection.closeConnection();
 				
 //				jdbcConnection.insertCukiernia(cukiernia);
 //				jdbcConnection.insertPoczta2(new Poczta("02-596", "Bdg"));

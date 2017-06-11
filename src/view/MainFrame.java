@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
@@ -23,6 +24,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -33,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -60,13 +63,14 @@ public class MainFrame extends JFrame {
 	private MyTableModel myTableModel;
 	private ListSelectionModel cellSelectionModel;
 	private JTable jTable;
-	private JMenuItem jMenuItem;
-	private JPanel dataPanel;
+	private JMenuItem menuRefresh;
+	private JMenuItem menuExit;
+	private JPanel introPanel;
 	private JPanel examinationPanel;
 	private JPanel patientsTablePanel;
 	private JButton addPatientBtn;
 	private JButton removePatientButton;
-	private JButton savePatientButton;
+	private JButton loginButton;
 	private JButton discardPatientButton;
 	private JButton saveExaminationButton;
 	private JButton discardExaminationButton;
@@ -86,55 +90,76 @@ public class MainFrame extends JFrame {
 	}
 
 	public void createGUI() {
-//		createMenu();
-		JPanel cards = new JPanel(new CardLayout());
+		createMenu();
+//		JPanel cards = new JPanel(new CardLayout());
+		JTabbedPane cards = new JTabbedPane();
 		
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		c.insets = new Insets(2,2,2,2);
+//		GridBagConstraints c = new GridBagConstraints();
+//		c.fill = GridBagConstraints.BOTH;
+//		c.weightx = 1.0;
+//		c.weighty = 1.0;
+//		c.insets = new Insets(2,2,2,2);
+//		
+//		c.gridx = 0;
+//		c.gridy = 0;
+//		c.gridwidth = 1;
+//		c.gridheight = 2;
+//		c.anchor = GridBagConstraints.LINE_START;
+		introPanel = new JPanel(new GridBagLayout());
+		createIntroPanel(introPanel);
 		
-		c.gridx = 0;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		c.gridheight = 2;
-		c.anchor = GridBagConstraints.LINE_START;
-		dataPanel = new JPanel(new GridBagLayout());
-		createIntroPanel(dataPanel);
-		add(dataPanel, c);
+		JComponent panel2 = makeTextPanel("Panel #2");
+		JComponent panel3 = makeTextPanel("Panel #3");
 		
-		c.gridx = 0;
-		c.gridy = 2;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		c.anchor = GridBagConstraints.LAST_LINE_START;
-		examinationPanel = new JPanel(new GridBagLayout());
-		createExaminationPanel(examinationPanel);
-
-		add(examinationPanel, c);
-		
-		c.gridx = 1;
-		c.gridy = 0;
-		c.gridwidth = 2;
-		c.gridheight = 3;
-		c.anchor = GridBagConstraints.CENTER;
-		patientsTablePanel = new JPanel(new BorderLayout());
-//		createPatientsTablePanel(patientsTablePanel);
-
-		add(patientsTablePanel, c);
+		cards.addTab("Login", introPanel);
+		cards.addTab("Dane pracownika", panel2);
+		cards.addTab("Dane cukierni", panel3);
+//		cards.add(introPanel, "Login");
+//		cards.add(introPanel, "Dane");
+		this.add(cards);
+//		
+//		c.gridx = 0;
+//		c.gridy = 2;
+//		c.gridwidth = 1;
+//		c.gridheight = 1;
+//		c.anchor = GridBagConstraints.LAST_LINE_START;
+//		examinationPanel = new JPanel(new GridBagLayout());
+//		createExaminationPanel(examinationPanel);
+//
+//		add(examinationPanel, c);
+//		
+//		c.gridx = 1;
+//		c.gridy = 0;
+//		c.gridwidth = 2;
+//		c.gridheight = 3;
+//		c.anchor = GridBagConstraints.CENTER;
+//		patientsTablePanel = new JPanel(new BorderLayout());
+////		createPatientsTablePanel(patientsTablePanel);
+//
+//		add(patientsTablePanel, c);
 	}
 
-	/*public void createMenu(){
+	protected JComponent makeTextPanel(String text) {
+        JPanel panel = new JPanel(false);
+        JLabel filler = new JLabel(text);
+        filler.setHorizontalAlignment(JLabel.CENTER);
+        panel.setLayout(new GridLayout(1, 1));
+        panel.add(filler);
+        return panel;
+    }
+
+	public void createMenu(){
 		JMenuBar jMenuBar = new JMenuBar();
 		JMenu jMenu = new JMenu("Aplikacja");
-		jMenuItem = new JMenuItem("Zakoncz");
+		menuRefresh = new JMenuItem("Zakoncz");
+		menuExit = new JMenuItem("Zakoncz");
 		KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_F4, KeyEvent.ALT_DOWN_MASK);
-		jMenuItem.setAccelerator(key);
-		jMenu.add(jMenuItem);
+		menuExit.setAccelerator(key);
+		jMenu.add(menuRefresh);
+		jMenu.add(menuExit);
 		jMenuBar.add(jMenu);
-		setJMenuBar(jMenuBar);
-	}*/
+		this.setJMenuBar(jMenuBar);
+	}
 
 
 	public void createIntroPanel(JPanel introPanel){
@@ -194,45 +219,16 @@ public class MainFrame extends JFrame {
 		c.gridy = 2;
 		c.gridwidth = 2;
 		introPanel.add(hostField, c);
-		femaleRadio = new JRadioButton("Kobieta");
-		femaleRadio.setActionCommand("K");
-		c.gridx = 1;
-		c.gridy = 3;
-		c.gridwidth = 1;
-		introPanel.add(femaleRadio, c);
-		maleRadio = new JRadioButton("Mezczyzna");
-		maleRadio.setActionCommand("M");
-		c.gridx = 2;
-		c.gridy = 3;
-		c.gridwidth = 1;
-		introPanel.add(maleRadio, c);
-		buttonGroup = new ButtonGroup();
-		buttonGroup.add(femaleRadio);
-		buttonGroup.add(maleRadio);
-
-		JLabel insuranceLabel = new JLabel("Ubezpieczenie:");
-		c.gridx = 0;
-		c.gridy = 4;
-		c.gridwidth = 1;
-		introPanel.add(insuranceLabel, c);
-
-		insuranceBox = new JComboBox<String>();
-		insuranceBox.addItem("NFZ");
-		insuranceBox.addItem("Prywatne");
-		insuranceBox.addItem("Brak");
-		c.gridx = 1;
-		c.gridy = 4;
-		c.gridwidth = 2;
-		introPanel.add(insuranceBox, c);
 		
-		savePatientButton = new JButton("Zapisz");
+		
+		loginButton = new JButton("Zaloguj");
 		c.insets = new Insets(15, 10, 5, 10);
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.gridx = 0;
 		c.gridy = 5;
 		c.gridwidth = 1;
-		introPanel.add(savePatientButton, c);
+		introPanel.add(loginButton, c);
 		
 		discardPatientButton = new JButton("Anuluj");
 		c.anchor = GridBagConstraints.LINE_START;
@@ -245,78 +241,7 @@ public class MainFrame extends JFrame {
 				"Dane pacjenta"));
 	}
 
-	public void createExaminationPanel(JPanel examinationPanel){
-		int fieldSize = 0;
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		
-		c.insets = new Insets(0, 5, 0, 5);
-
-		JLabel dataLabel = new JLabel("Data:");
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.gridwidth = 2;
-		examinationPanel.add(dataLabel, c);
-
-		JLabel p1Label = new JLabel("Liczba erytrocytow [mln/mm3]:");
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 2;
-		examinationPanel.add(p1Label, c);
-
-		redCellsField = new JTextField(fieldSize);
-		//c.weightx = 0;
-		c.gridx = 2;
-		c.gridy = 1;
-		c.gridwidth = 1;
-		examinationPanel.add(redCellsField, c);
-
-		JLabel p2Label = new JLabel("Stezenie hemoglobiny [g/dl]:");
-		c.gridx = 0;
-		c.gridy = 2;
-		c.gridwidth = 2;
-		examinationPanel.add(p2Label, c);
-
-		hemoglobinField = new JTextField(fieldSize);
-		c.gridx = 2;
-		c.gridy = 2;
-		c.gridwidth = 1;
-		examinationPanel.add(hemoglobinField, c);
-
-		JLabel p3Label = new JLabel("Stezenie zelaza [mg/dl]:");
-		c.gridx = 0;
-		c.gridy = 3;
-		c.gridwidth = 2;
-		examinationPanel.add(p3Label, c);	
-
-		ironField = new JTextField(fieldSize);
-		c.gridx = 2;
-		c.gridy = 3;
-		c.gridwidth = 1;
-		examinationPanel.add(ironField, c);
-		
-		saveExaminationButton = new JButton("Zapisz");
-		c.insets = new Insets(10, 10, 0, 10);
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.LINE_END;
-		c.gridx = 0;
-		c.gridy = 4;
-		c.gridwidth = 1;
-		examinationPanel.add(saveExaminationButton, c);
-		
-		discardExaminationButton = new JButton("Anuluj");
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridx = 1;
-		c.gridy = 4;
-		c.gridwidth = 1;
-		examinationPanel.add(discardExaminationButton, c);
-
-		examinationPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), 
-				"Badanie"));
-	}
+	
 
 	public boolean isDataChanged() {
 		if (loginField.getText().equals("") || passField.getText().equals("") || 
@@ -336,12 +261,6 @@ public class MainFrame extends JFrame {
 		insuranceBox.setSelectedIndex(0);
 	}
 
-	public void clearExaminationPanel()
-	{
-		redCellsField.setText("");
-		hemoglobinField.setText("");
-		ironField.setText("");
-	}
 
 	public void invalidSignMessageWindow()
 	{
@@ -350,34 +269,34 @@ public class MainFrame extends JFrame {
 
 
 
-	public void setController(EventListener a) 
+	public void setController(EventListener eventListener) 
 	{
-		this.jMenuItem.setActionCommand("menu-zakoncz");
+		this.menuExit.setActionCommand("menu-zakoncz");
 		this.addPatientBtn.setActionCommand("add-patient-button");
 		this.removePatientButton.setActionCommand("remove-patient-button");
-		this.savePatientButton.setActionCommand("save-patient-button");
-		this.discardPatientButton.setActionCommand("discard-patient-button");
-		this.saveExaminationButton.setActionCommand("save-examination-button");
-		this.discardExaminationButton.setActionCommand("discard-examination-button");
-		this.peselField.getDocument().putProperty("name", "pesel-field");
-		this.redCellsField.getDocument().putProperty("name", "red-cells-field");
-		this.hemoglobinField.getDocument().putProperty("name", "hemoglobin-field");
-		this.ironField.getDocument().putProperty("name", "iron-field");
-
-		this.addWindowListener((WindowListener) a);
-		this.jMenuItem.addActionListener((ActionListener) a);
-		this.addPatientBtn.addActionListener((ActionListener) a);
-		this.removePatientButton.addActionListener((ActionListener) a);
-		this.savePatientButton.addActionListener((ActionListener) a);
-		this.discardPatientButton.addActionListener((ActionListener) a);
-		this.saveExaminationButton.addActionListener((ActionListener) a);
-		this.discardExaminationButton.addActionListener((ActionListener) a);
-		this.addComponentListener((ComponentListener) a);
-		this.cellSelectionModel.addListSelectionListener((ListSelectionListener) a);
-		this.peselField.getDocument().addDocumentListener((DocumentListener) a);
-		this.redCellsField.getDocument().addDocumentListener((DocumentListener) a);
-		this.hemoglobinField.getDocument().addDocumentListener((DocumentListener) a);
-		this.ironField.getDocument().addDocumentListener((DocumentListener) a);
+//		this.savePatientButton.setActionCommand("save-patient-button");
+//		this.discardPatientButton.setActionCommand("discard-patient-button");
+//		this.saveExaminationButton.setActionCommand("save-examination-button");
+//		this.discardExaminationButton.setActionCommand("discard-examination-button");
+//		this.peselField.getDocument().putProperty("name", "pesel-field");
+//		this.redCellsField.getDocument().putProperty("name", "red-cells-field");
+//		this.hemoglobinField.getDocument().putProperty("name", "hemoglobin-field");
+//		this.ironField.getDocument().putProperty("name", "iron-field");
+//
+//		this.addWindowListener((WindowListener) eventListener);
+//		this.jMenuItem.addActionListener((ActionListener) eventListener);
+//		this.addPatientBtn.addActionListener((ActionListener) eventListener);
+//		this.removePatientButton.addActionListener((ActionListener) eventListener);
+//		this.savePatientButton.addActionListener((ActionListener) eventListener);
+//		this.discardPatientButton.addActionListener((ActionListener) eventListener);
+//		this.saveExaminationButton.addActionListener((ActionListener) eventListener);
+//		this.discardExaminationButton.addActionListener((ActionListener) eventListener);
+//		this.addComponentListener((ComponentListener) eventListener);
+//		this.cellSelectionModel.addListSelectionListener((ListSelectionListener) eventListener);
+//		this.peselField.getDocument().addDocumentListener((DocumentListener) eventListener);
+//		this.redCellsField.getDocument().addDocumentListener((DocumentListener) eventListener);
+//		this.hemoglobinField.getDocument().addDocumentListener((DocumentListener) eventListener);
+//		this.ironField.getDocument().addDocumentListener((DocumentListener) eventListener);
 	}
 
 
