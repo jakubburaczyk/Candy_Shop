@@ -1,0 +1,27 @@
+Insert pacjent:
+
+insert into poczty 
+	(kod_pocztowy, miejscowosc) 
+values 
+	(...)
+
+insert into adresy 
+	(miasto, nazwa_ulicy, numer_budynku, numer_lokalu, id_poczta, id_cukierni)
+values
+	('Warszawa', 'Marszalkowska', '27', '132B', 1, 1)
+	
+ALTER TABLE ADRESY RENAME COLUMN "NUMER BUDYNKU" TO NUMER_BUDYNKU
+	
+	
+insert into pracownicy 
+    (ID_PRACOWNIK, IMIE, NAZWISKO, PLEC, DATA_URODZENIA, DATA_ZATRUDNIENIA, PESEL, ID_CUKIERNI, ID_ADRES)
+values 
+	(..)
+	
+	
+insert cukiernia:
+
+insert into cukiernie
+	(nazwa, nip, regon)
+values
+	('Cukiernia glowna', 'nip_przykl', 'reg_przykl')
