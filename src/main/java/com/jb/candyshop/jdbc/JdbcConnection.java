@@ -1,4 +1,4 @@
-package jdbc;
+package com.jb.candyshop.jdbc;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -9,10 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import model.Adres;
-import model.Cukiernia;
-import model.Poczta;
-import model.Pracownik;
+import com.jb.candyshop.model.Address;
+import com.jb.candyshop.model.CandyShop;
+import com.jb.candyshop.model.Post;
+import com.jb.candyshop.model.Worker;
 
 public class JdbcConnection {
 
@@ -34,7 +34,7 @@ public class JdbcConnection {
 	public JdbcConnection(String host, int port, String SID){
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
-			String adress = "jdbc:oracle:thin:@" + host + ":" + port + ":" + SID;
+			String adress = "com.jb.candyshop.jdbc:oracle:thin:@" + host + ":" + port + ":" + SID;
 			String login = "jburaczy";
 			String password = "jburaczy";
 			connection = DriverManager.getConnection(adress, login, password);
@@ -107,7 +107,7 @@ public class JdbcConnection {
 		return -1;
 	}
 	
-	public Pracownik selectPracownik(String pesel){
+	public Worker selectPracownik(String pesel){
 
 		try {
 			String sql1 = "SELECT PR.ID_PRACOWNIK, PR.IMIE, PR.NAZWISKO, PR.PLEC, PR.DATA_URODZENIA,"
@@ -127,40 +127,40 @@ public class JdbcConnection {
 
 			ResultSet rs = ps1.executeQuery();
 			if (rs.next()){
-				Pracownik pracownik = new Pracownik();
-				pracownik.setId_pracownika(rs.getInt(1));
-				pracownik.setImie(rs.getString(2));
-				pracownik.setNazwisko(rs.getString(3));
-				pracownik.setPlec(rs.getString(4));
-				pracownik.setDataUrodzenia(rs.getDate(5).toLocalDate());
-				pracownik.setDataZatrudnienia(rs.getDate(6).toLocalDate());
-				pracownik.setPesel(rs.getString(7));
-				if (rs.getString(8) != null) pracownik.setStanowisko(rs.getString(8));
-				if (rs.getString(9) != null) pracownik.setNrKonta(rs.getString(9));
-				if (rs.getString(10) != null) pracownik.setNrTelefonu(rs.getString(10));
-				if (rs.getString(11) != null) pracownik.setOpis(rs.getString(11));
-				if (rs.getDate(12) != null) pracownik.setData_zwolnienia(rs.getDate(12).toLocalDate());
-				pracownik.setId_cukierni(rs.getInt(13));
-				pracownik.setId_adres(rs.getInt(14));
+				Worker worker = new Worker();
+				worker.setWorkerId(rs.getInt(1));
+				worker.setForName(rs.getString(2));
+				worker.setLatsName(rs.getString(3));
+				worker.setGender(rs.getString(4));
+				worker.setDayOfBirth(rs.getDate(5).toLocalDate());
+				worker.setDateOfEmployment(rs.getDate(6).toLocalDate());
+				worker.setPesel(rs.getString(7));
+				if (rs.getString(8) != null) worker.setJob(rs.getString(8));
+				if (rs.getString(9) != null) worker.setAccount(rs.getString(9));
+				if (rs.getString(10) != null) worker.setTelephone(rs.getString(10));
+				if (rs.getString(11) != null) worker.setDesc(rs.getString(11));
+				if (rs.getDate(12) != null) worker.setDateOfUnemployment(rs.getDate(12).toLocalDate());
+				worker.setCandyShopId(rs.getInt(13));
+				worker.setAddressId(rs.getInt(14));
 
-				Adres adres = new Adres();
-				adres.setId_adres(rs.getInt(14));
-				adres.setMiasto(rs.getString(15));
-				adres.setNazwaUlicy(rs.getString(16));
-				adres.setNumerBudynku(rs.getString(17));
-				adres.setNumerLokalu(rs.getString(18));
-				adres.setId_poczta(rs.getInt(19));
-				adres.setId_cukierni(rs.getInt((13)));
-				if (rs.getInt(20) != 0) adres.setId_dostawcy(rs.getInt(20));
+				Address address = new Address();
+				address.setAddressId(rs.getInt(14));
+				address.setTown(rs.getString(15));
+				address.setStreet(rs.getString(16));
+				address.setBuildingNumber(rs.getString(17));
+				address.setApartamentNumber(rs.getString(18));
+				address.setPostId(rs.getInt(19));
+				address.setCandySchopId(rs.getInt((13)));
+				if (rs.getInt(20) != 0) address.setProviderId(rs.getInt(20));
 				
-				Poczta poczta = new Poczta();
-				poczta.setId_poczta(rs.getInt(19));
-				poczta.setKodPocztowy(rs.getString(21));
-				poczta.setMiejscowosc(rs.getString(22));
+				Post post = new Post();
+				post.setPostId(rs.getInt(19));
+				post.setPostCode(rs.getString(21));
+				post.setTown(rs.getString(22));
 
-				adres.setPoczta(poczta);
-				pracownik.setAdres(adres);
-				return pracownik;
+				address.setPost(post);
+				worker.setAddress(address);
+				return worker;
 			}
 		} catch (SQLException e) {
 			
@@ -169,20 +169,20 @@ public class JdbcConnection {
 		return null;
 	}
 	
-	public void updatePracownik(Pracownik pracownik){
+	public void updatePracownik(Worker worker){
 		try {
 			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE PRACOWNICY SET "
 					+ "IMIE=?, NAZWISKO=?, PLEC=?, "
 					+ "DATA_URODZENIA=?, DATA_ZATRUDNIENIA=?, PESEL=? "
 					+ "WHERE ID_PRACOWNIK=?");
 			
-			preparedStatement.setString(1, pracownik.getImie());
-			preparedStatement.setString(2, pracownik.getNazwisko());
-			preparedStatement.setString(3, pracownik.getPlec());
-			preparedStatement.setDate(4, Date.valueOf(pracownik.getDataUrodzenia()));
-			preparedStatement.setDate(5, Date.valueOf(pracownik.getDataZatrudnienia()));
-			preparedStatement.setString(6, pracownik.getPesel());
-			preparedStatement.setInt(7, pracownik.getId_pracownika());
+			preparedStatement.setString(1, worker.getForName());
+			preparedStatement.setString(2, worker.getLatsName());
+			preparedStatement.setString(3, worker.getGender());
+			preparedStatement.setDate(4, Date.valueOf(worker.getDayOfBirth()));
+			preparedStatement.setDate(5, Date.valueOf(worker.getDateOfEmployment()));
+			preparedStatement.setString(6, worker.getPesel());
+			preparedStatement.setInt(7, worker.getWorkerId());
 			
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
@@ -191,7 +191,7 @@ public class JdbcConnection {
 		}
 	}
 	
-	public Cukiernia selectCukiernia(int id){
+	public CandyShop selectCukiernia(int id){
 		try {
 			String sql1 = "SELECT * FROM CUKIERNIE WHERE ID_CUKIERNI=?";
 			PreparedStatement ps1 = connection.prepareStatement(sql1);
@@ -200,13 +200,13 @@ public class JdbcConnection {
 
 			ResultSet rs1 = ps1.executeQuery();
 			if (rs1.next()){
-				Cukiernia cukiernia = new Cukiernia();
-				cukiernia.setIdCukierni(rs1.getInt(1));
-				cukiernia.setNazwa(rs1.getString(2));
-				cukiernia.setNip(rs1.getString(3));
-				cukiernia.setRegon(rs1.getString(4));
+				CandyShop candyShop = new CandyShop();
+				candyShop.setCandyShopId(rs1.getInt(1));
+				candyShop.setName(rs1.getString(2));
+				candyShop.setNip(rs1.getString(3));
+				candyShop.setRegon(rs1.getString(4));
 
-				return cukiernia;
+				return candyShop;
 			}
 			rs1.close();
 			ps1.close();

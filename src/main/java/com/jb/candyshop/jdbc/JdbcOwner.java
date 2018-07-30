@@ -1,4 +1,4 @@
-package jdbc;
+package com.jb.candyshop.jdbc;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -7,39 +7,40 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import model.Adres;
-import model.Poczta;
-import model.Pracownik;
-import model.Wlasciciel;
+import com.jb.candyshop.model.Address;
+import com.jb.candyshop.model.Post;
+import com.jb.candyshop.model.Worker;
+import com.jb.candyshop.model.Owner;
 
-public class JdbcWlasciciel {
-	JdbcConnection jdbcConnection;
+public class JdbcOwner {
+
+	private JdbcConnection jdbcConnection;
 	
-	public JdbcWlasciciel(JdbcConnection jdbcConnection){
+	public JdbcOwner(JdbcConnection jdbcConnection){
 		this.jdbcConnection = jdbcConnection;
 	}
 	
-	public Wlasciciel selectWlasciciel(String pesel){
+	public Owner selectOwner(String id){
 		Connection connection = jdbcConnection.getConnection();
 		
 		try {
 			String sql1 = "SELECT * FROM WLASCICIELE WHERE PESEL=?";
 			PreparedStatement ps1 = connection.prepareStatement(sql1);
 			
-			ps1.setString(1, pesel);
+			ps1.setString(1, id);
 			
 			ResultSet rs1 = ps1.executeQuery();
 			if (rs1.next()){
-				Wlasciciel wlasciciel = new Wlasciciel();
-				wlasciciel.setId_wlasciciel(rs1.getInt(1));
-				wlasciciel.setImie(rs1.getString(2));
-				wlasciciel.setNazwisko(rs1.getString(3));
-				wlasciciel.setOd_kiedy(rs1.getDate(4).toLocalDate());
-				if (rs1.getDate(5) != null) wlasciciel.setDo_kiedy(rs1.getDate(5).toLocalDate());
-				wlasciciel.setId_cukierni(rs1.getInt(6));
-				wlasciciel.setPesel(rs1.getString(7));
+				Owner owner = new Owner();
+				owner.setOwnerId(rs1.getInt(1));
+				owner.setForName(rs1.getString(2));
+				owner.setLastName(rs1.getString(3));
+				owner.setSinceWhen(rs1.getDate(4).toLocalDate());
+				if (rs1.getDate(5) != null) owner.setToWhen(rs1.getDate(5).toLocalDate());
+				owner.setCandyShopId(rs1.getInt(6));
+				owner.setId(rs1.getString(7));
 				
-				return wlasciciel;
+				return owner;
 			} 
 			
 		} catch (SQLException e){
@@ -48,17 +49,17 @@ public class JdbcWlasciciel {
 		return null;
 	}
 	
-	public void updateWlasciciel(Wlasciciel wlasciciel){
+	public void updateOwner(Owner owner){
 		Connection connection = jdbcConnection.getConnection();
 		try {
 			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE WLASCICIELE SET "
 					+ "IMIE=?, NAZWISKO=?, PESEL=?, OD_KIEDY=? WHERE ID_WLASCICIEL=?");
 			
-			preparedStatement.setString(1, wlasciciel.getImie());
-			preparedStatement.setString(2, wlasciciel.getNazwisko());
-			preparedStatement.setString(3, wlasciciel.getPesel());
-			preparedStatement.setDate(4, Date.valueOf(wlasciciel.getOd_kiedy()));
-			preparedStatement.setInt(5, wlasciciel.getId_wlasciciel());
+			preparedStatement.setString(1, owner.getForName());
+			preparedStatement.setString(2, owner.getLastName());
+			preparedStatement.setString(3, owner.getId());
+			preparedStatement.setDate(4, Date.valueOf(owner.getSinceWhen()));
+			preparedStatement.setInt(5, owner.getOwnerId());
 			
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
@@ -69,23 +70,23 @@ public class JdbcWlasciciel {
 	}
 
 	
-	public void insertPoczta(Poczta poczta) {
+	private void insertPost(Post post) {
 		try {
 			Connection connection = jdbcConnection.getConnection();
 			
 			PreparedStatement preparedStatement0 = connection.prepareStatement("select * from poczty where kod_pocztowy=?");
-			preparedStatement0.setString(1, poczta.getKodPocztowy());
+			preparedStatement0.setString(1, post.getPostCode());
 			
 			ResultSet resultSet0 = preparedStatement0.executeQuery();
 			if (resultSet0.next()){
-				poczta.setId_poczta(resultSet0.getInt(1));
+				post.setPostId(resultSet0.getInt(1));
 			} else {
 				PreparedStatement preparedStatement1 = connection.prepareStatement("insert into poczty "
 						+ "(kod_pocztowy, miejscowosc) "
 						+ "values (?, ?)");
 
-				preparedStatement1.setString(1, poczta.getKodPocztowy());
-				preparedStatement1.setString(2, poczta.getMiejscowosc());
+				preparedStatement1.setString(1, post.getPostCode());
+				preparedStatement1.setString(2, post.getTown());
 
 				preparedStatement1.executeUpdate();
 				preparedStatement1.close();
@@ -93,11 +94,11 @@ public class JdbcWlasciciel {
 				PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT ID_POCZTA FROM POCZTY "
 						+ " WHERE KOD_POCZTOWY=? AND MIEJSCOWOSC=?");
 
-				preparedStatement2.setString(1, poczta.getKodPocztowy());
-				preparedStatement2.setString(2, poczta.getMiejscowosc());
+				preparedStatement2.setString(1, post.getPostCode());
+				preparedStatement2.setString(2, post.getTown());
 				ResultSet resultSet1 = preparedStatement2.executeQuery();
 				resultSet1.next();
-				poczta.setId_poczta(resultSet1.getInt(1));
+				post.setPostId(resultSet1.getInt(1));
 				preparedStatement2.close();
 			}
 				
@@ -106,16 +107,16 @@ public class JdbcWlasciciel {
 		}
 	}	
 	
-	public void updatePoczta(Poczta poczta){
+	public void updatePoczta(Post post){
 		Connection connection = jdbcConnection.getConnection();
 		try {
 			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE POCZTY SET "
 					+ "KOD_POCZTOWY=?, MIEJSCOWOSC=? "
 					+ "WHERE ID_POCZTA=?");
 			
-			preparedStatement.setString(1, poczta.getKodPocztowy());
-			preparedStatement.setString(2, poczta.getMiejscowosc());
-			preparedStatement.setInt(3, poczta.getId_poczta());
+			preparedStatement.setString(1, post.getPostCode());
+			preparedStatement.setString(2, post.getTown());
+			preparedStatement.setInt(3, post.getPostId());
 			
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
@@ -124,24 +125,24 @@ public class JdbcWlasciciel {
 		} 		
 	}
 	
-	public void insertAdres(Adres adres) {
+	public void insertAdres(Address address) {
 		try {
 			
-			insertPoczta(adres.getPoczta());
+			insertPost(address.getPost());
 			
 			Connection connection = jdbcConnection.getConnection();
 			PreparedStatement preparedStatement1 = connection.prepareStatement("insert into adresy "
 					+ "(miasto, nazwa_ulicy, numer_lokalu, numer_budynku, id_poczta, id_cukierni) "
 					+ "values (?, ?, ?, ?, ?, ?)");
 			
-			preparedStatement1.setString(1, adres.getMiasto());
-			preparedStatement1.setString(2, adres.getNazwaUlicy());
-			preparedStatement1.setString(3, adres.getNumerLokalu());
-			preparedStatement1.setString(4, adres.getNumerBudynku());
-			preparedStatement1.setInt(5, adres.getPoczta().getId_poczta());
-			preparedStatement1.setInt(6, adres.getId_cukierni());
+			preparedStatement1.setString(1, address.getTown());
+			preparedStatement1.setString(2, address.getStreet());
+			preparedStatement1.setString(3, address.getApartamentNumber());
+			preparedStatement1.setString(4, address.getBuildingNumber());
+			preparedStatement1.setInt(5, address.getPost().getPostId());
+			preparedStatement1.setInt(6, address.getCandySchopId());
 			
-			System.out.println(adres.getPoczta().getId_poczta());
+			System.out.println(address.getPost().getPostId());
 			
 			preparedStatement1.executeUpdate();
 			preparedStatement1.close();
@@ -149,12 +150,12 @@ public class JdbcWlasciciel {
 			PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT ID_ADRES FROM ADRESY "
 					+ " WHERE nazwa_ulicy=? AND numer_lokalu=? AND numer_budynku=?");
 
-			preparedStatement2.setString(1, adres.getNazwaUlicy());
-			preparedStatement2.setString(2, adres.getNumerLokalu());
-			preparedStatement2.setString(3, adres.getNumerBudynku());
+			preparedStatement2.setString(1, address.getStreet());
+			preparedStatement2.setString(2, address.getApartamentNumber());
+			preparedStatement2.setString(3, address.getBuildingNumber());
 			ResultSet resultSet = preparedStatement2.executeQuery();
 			resultSet.next();
-			adres.setId_adres(resultSet.getInt(1));
+			address.setAddressId(resultSet.getInt(1));
 			preparedStatement2.close();
 				
 		} catch (SQLException e) {
@@ -162,7 +163,7 @@ public class JdbcWlasciciel {
 		}
 	}	
 	
-	public void updateAdres(Adres adres){
+	public void updateAdres(Address address){
 			Connection connection = jdbcConnection.getConnection();
 			try {
 				PreparedStatement preparedStatement = connection.prepareStatement("UPDATE ADRESY SET "
@@ -170,11 +171,11 @@ public class JdbcWlasciciel {
 						+ "NUMER_LOKALU=?, NUMER_BUDYNKU=? "
 						+ "WHERE ID_ADRES=?");
 				
-				preparedStatement.setString(1, adres.getMiasto());
-				preparedStatement.setString(2, adres.getNazwaUlicy());
-				preparedStatement.setString(1, adres.getNumerLokalu());
-				preparedStatement.setString(2, adres.getNumerBudynku());
-				preparedStatement.setInt(3, adres.getId_adres());
+				preparedStatement.setString(1, address.getTown());
+				preparedStatement.setString(2, address.getStreet());
+				preparedStatement.setString(1, address.getApartamentNumber());
+				preparedStatement.setString(2, address.getBuildingNumber());
+				preparedStatement.setInt(3, address.getAddressId());
 				
 				preparedStatement.executeUpdate();
 				preparedStatement.close();
@@ -183,23 +184,23 @@ public class JdbcWlasciciel {
 			} 		
 	}
 	
-	public void insertPracownik(Pracownik pracownik){
+	public void insertPracownik(Worker worker){
 		try {
-			insertAdres(pracownik.getAdres());
+			insertAdres(worker.getAddress());
 			
 			Connection connection = jdbcConnection.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO PRACOWNICY "
 					+ " (IMIE, NAZWISKO, PLEC, DATA_URODZENIA, DATA_ZATRUDNIENIA, PESEL, ID_CUKIERNI, ID_ADRES) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
-			preparedStatement.setString(1, pracownik.getImie());
-			preparedStatement.setString(2, pracownik.getNazwisko());
-			preparedStatement.setString(3, pracownik.getPlec());
-			preparedStatement.setDate(4, Date.valueOf(pracownik.getDataUrodzenia()));
-			preparedStatement.setDate(5, Date.valueOf(pracownik.getDataZatrudnienia()));
-			preparedStatement.setString(6, pracownik.getPesel());
+			preparedStatement.setString(1, worker.getForName());
+			preparedStatement.setString(2, worker.getLatsName());
+			preparedStatement.setString(3, worker.getGender());
+			preparedStatement.setDate(4, Date.valueOf(worker.getDayOfBirth()));
+			preparedStatement.setDate(5, Date.valueOf(worker.getDateOfEmployment()));
+			preparedStatement.setString(6, worker.getPesel());
 			preparedStatement.setInt(7, 1);
-			preparedStatement.setInt(8, pracownik.getAdres().getId_adres());
+			preparedStatement.setInt(8, worker.getAddress().getAddressId());
 
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
@@ -207,11 +208,11 @@ public class JdbcWlasciciel {
 			PreparedStatement preparedStatement1 = connection.prepareStatement("SELECT ID_PRACOWNIK FROM PRACOWNICY "
 					+ " WHERE PESEL=?");
 
-			preparedStatement1.setString(1, pracownik.getPesel());
+			preparedStatement1.setString(1, worker.getPesel());
 
 			ResultSet resultSet = preparedStatement1.executeQuery();
 			resultSet.next();
-			pracownik.setId_pracownika(resultSet.getInt(1));
+			worker.setWorkerId(resultSet.getInt(1));
 			preparedStatement1.close();
 
 		} catch (SQLException e) {
@@ -233,7 +234,7 @@ public class JdbcWlasciciel {
 		}
 	}
 	
-	/*public void insertCukiernia(Cukiernia cukiernia){
+	/*public void insertCukiernia(CandyShop cukiernia){
 		try {
 			Connection connection = jdbcConnection.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("insert into cukiernie "
@@ -241,7 +242,7 @@ public class JdbcWlasciciel {
 					+ "values (?,?,?,?)");
 			
 			preparedStatement.setInt(1, cukiernia.getIdCukierni());
-			preparedStatement.setString(2, cukiernia.getNazwa());
+			preparedStatement.setString(2, cukiernia.getName());
 			preparedStatement.setString(3, cukiernia.getNip());
 			preparedStatement.setString(4, cukiernia.getRegon());
 			preparedStatement.executeUpdate();

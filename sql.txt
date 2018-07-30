@@ -1,12 +1,12 @@
 Insert pacjent:
 
 insert into poczty 
-	(kod_pocztowy, miejscowosc) 
+	(kod_pocztowy, town)
 values 
 	(...)
 
 insert into adresy 
-	(miasto, nazwa_ulicy, numer_budynku, numer_lokalu, id_poczta, id_cukierni)
+	(town, nazwa_ulicy, numer_budynku, numer_lokalu, postId, candySchopId)
 values
 	('Warszawa', 'Marszalkowska', '27', '132B', 1, 1)
 	
@@ -19,9 +19,9 @@ values
 	(..)
 	
 	
-insert cukiernia:
+insert candyShop:
 
 insert into cukiernie
-	(nazwa, nip, regon)
+	(name, nip, regon)
 values
 	('Cukiernia glowna', 'nip_przykl', 'reg_przykl')

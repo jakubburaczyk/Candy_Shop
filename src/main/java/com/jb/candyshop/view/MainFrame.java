@@ -1,26 +1,14 @@
-package view;
+package com.jb.candyshop.view;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.EventListener;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -34,16 +22,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -117,7 +100,7 @@ public class MainFrame extends JFrame {
 //		cards.add(introPanel, "Login");
 //		cards.add(introPanel, "Dane");
 		this.add(cards);
-//		
+//
 //		c.gridx = 0;
 //		c.gridy = 2;
 //		c.gridwidth = 1;
@@ -127,7 +110,7 @@ public class MainFrame extends JFrame {
 //		createExaminationPanel(examinationPanel);
 //
 //		add(examinationPanel, c);
-//		
+//
 //		c.gridx = 1;
 //		c.gridy = 0;
 //		c.gridwidth = 2;
@@ -208,7 +191,7 @@ public class MainFrame extends JFrame {
 		c.gridwidth = 2;
 		introPanel.add(peselField, c);
 
-		JLabel hostLabel = new JLabel("Adres hosta:");
+		JLabel hostLabel = new JLabel("Address hosta:");
 		c.gridx = 0;
 		c.gridy = 3;
 		c.gridwidth = 1;
@@ -244,8 +227,8 @@ public class MainFrame extends JFrame {
 	
 
 	public boolean isDataChanged() {
-		if (loginField.getText().equals("") || passField.getText().equals("") || 
-				peselField.getText().equals("") || (!maleRadio.isSelected() && !femaleRadio.isSelected())) 
+		if (loginField.getText().equals("") || passField.getText().equals("") ||
+				peselField.getText().equals("") || (!maleRadio.isSelected() && !femaleRadio.isSelected()))
 		{
 			return false;
 		}
@@ -274,29 +257,6 @@ public class MainFrame extends JFrame {
 		this.menuExit.setActionCommand("menu-zakoncz");
 		this.addPatientBtn.setActionCommand("add-patient-button");
 		this.removePatientButton.setActionCommand("remove-patient-button");
-//		this.savePatientButton.setActionCommand("save-patient-button");
-//		this.discardPatientButton.setActionCommand("discard-patient-button");
-//		this.saveExaminationButton.setActionCommand("save-examination-button");
-//		this.discardExaminationButton.setActionCommand("discard-examination-button");
-//		this.peselField.getDocument().putProperty("name", "pesel-field");
-//		this.redCellsField.getDocument().putProperty("name", "red-cells-field");
-//		this.hemoglobinField.getDocument().putProperty("name", "hemoglobin-field");
-//		this.ironField.getDocument().putProperty("name", "iron-field");
-//
-//		this.addWindowListener((WindowListener) eventListener);
-//		this.jMenuItem.addActionListener((ActionListener) eventListener);
-//		this.addPatientBtn.addActionListener((ActionListener) eventListener);
-//		this.removePatientButton.addActionListener((ActionListener) eventListener);
-//		this.savePatientButton.addActionListener((ActionListener) eventListener);
-//		this.discardPatientButton.addActionListener((ActionListener) eventListener);
-//		this.saveExaminationButton.addActionListener((ActionListener) eventListener);
-//		this.discardExaminationButton.addActionListener((ActionListener) eventListener);
-//		this.addComponentListener((ComponentListener) eventListener);
-//		this.cellSelectionModel.addListSelectionListener((ListSelectionListener) eventListener);
-//		this.peselField.getDocument().addDocumentListener((DocumentListener) eventListener);
-//		this.redCellsField.getDocument().addDocumentListener((DocumentListener) eventListener);
-//		this.hemoglobinField.getDocument().addDocumentListener((DocumentListener) eventListener);
-//		this.ironField.getDocument().addDocumentListener((DocumentListener) eventListener);
 	}
 
 
